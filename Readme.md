@@ -29,15 +29,16 @@ When implementing a service - there are lots of things to consider. Some of thos
 * Fault handling
 
 ### Implementation
-REST API started at https://localhost:8080/api/v1
-Open API docs available at https://localhost:8080/api/docs
-Swagger UI available at https://localhost:8080/api/swagger-ui
-Actuator endpoints available at https://localhost:8080/api/actuator
+REST API started at https://localhost:8080/api/v1  \
+Open API docs available at https://localhost:8080/api/docs  \
+Swagger UI available at https://localhost:8080/api/swagger-ui  \
+Actuator endpoints available at https://localhost:8080/api/actuator  \
+Logging all activity to /logs/archive/rest-api*.log 
 
 ### Endpoints
-http://localhost:8080/api/v1/mail/send POST - send mail message
-http://localhost:8080/api/v1/mail/messages GET - view sent and received messages
-http://localhost:8080/api/v1/auth/token POST - retrieve authentication token
-http://localhost:8080/api/v1/auth/info GET - retrieve authentication details
-http://localhost:8080/api/v1/auth/users GET - retrieve registered users
+http://localhost:8080/api/v1/mail/send POST - send mail message  \
+http://localhost:8080/api/v1/mail/messages GET - view sent and received messages  \
+http://localhost:8080/api/v1/auth/token POST - retrieve authentication token  \
+http://localhost:8080/api/v1/auth/info GET - retrieve authentication details  \
+http://localhost:8080/api/v1/auth/users GET - retrieve registered users  \
 
