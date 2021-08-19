@@ -26,14 +26,26 @@
         </rollingPolicy>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="RollingFile"/>
+    <appender name="AsyncConsole" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="Console"/>
+        <queueSize>500</queueSize>
+        <maxFlushTime>1000</maxFlushTime>
+    </appender>
+
+    <appender name="AsyncFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="RollingFile"/>
+        <queueSize>500</queueSize>
+        <maxFlushTime>1000</maxFlushTime>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="AsyncFile"/>
+        <appender-ref ref="AsyncConsole"/>
     </root>
 
     <logger name="com.effcode.clean.me" level="debug" additivity="false">
-        <appender-ref ref="RollingFile"/>
-        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncFile"/>
+        <appender-ref ref="AsyncConsole"/>
     </logger>
 
 </configuration>

@@ -3,10 +3,10 @@ name: CI/CD
 on: [push]
 
 jobs:
-  compile_api:
+  build_api:
     name: Compile and test the REST API
     runs-on: ubuntu-20.04
-    container: gradle:6.7.0-jdk15
+    container: maven:7.2.0-jdk11
     steps:
       - uses: actions/checkout@v2
       - name: Build rest-api
@@ -20,16 +20,17 @@ jobs:
           ssh-add ~/.ssh/id_rsa
 
           ssh -o StrictHostKeyChecking=no -N -L 5432:localhost:5432 dame@arktype.net &
-          gradle test bootJar -Dorg.gradle.daemon=false
+          mvn spring-boot:repackage
+
       - name: Upload jar file
         uses: actions/upload-artifact@v2
         with:
           name: rest-api-jar
-          path: clean-me-up-rest/build/libs/clean-me-up-rest-1.0.0-SNAPSHOT.jar
+          path: clean-me-up-rest/target/clean-me-up-rest-1.0.0-SNAPSHOT.jar
           retention-days: 5
 
-  docker_build:
-    needs: [compile_api]
+  build_docker:
+    needs: [build_api]
     name: Build the docker image
     services:
       docker:
@@ -54,14 +55,14 @@ jobs:
           docker build -f Dockerfile -t docker.pkg.github.com/arktype/clean-me-up-rest-api .
           docker push docker.pkg.github.com/arktype/clean-me-up-rest-api
 
-  deploy_staging:
-    needs: [docker_build]
-    name: Deploy API docker image to staging
+  deploy_api:
+    needs: [build_docker]
+    name: Deploy REST API docker image
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
-      - name: Deploy API to staging
+      - name: Deploy REST API image
         env:
           SUPER_SECRET: ${{ secrets.SSH_PRIVATE }}
           DOCKER_USER: ${{ github.actor }}
@@ -74,4 +75,4 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/id_rsa
 
-          cat deploy/update.sh | envsubst | ssh -o StrictHostKeyChecking=no dame@arktype.net
+          cat .github/workflows/update.sh | envsubst | ssh -o StrictHostKeyChecking=no dame@arktype.net

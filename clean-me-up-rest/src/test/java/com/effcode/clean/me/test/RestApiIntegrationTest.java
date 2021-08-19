@@ -1,13 +1,12 @@
 package com.effcode.clean.me.test;
 
 import com.effcode.clean.me.domain.exception.Error;
-import com.effcode.clean.me.rest.error.ErrorResponse;
 import com.effcode.clean.me.rest.data.*;
+import com.effcode.clean.me.rest.error.ErrorResponse;
 import io.jsonwebtoken.lang.Assert;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +19,12 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
-import javax.net.ssl.*;
-import java.security.NoSuchAlgorithmException;
+import javax.net.ssl.SSLException;
 import java.util.List;
 
 /**
- * REST API integration tests used for verification of user authentication, API connectivity and data consistency
+ * REST API integration tests used for verification of user authentication, API connectivity and data consistency.
+ * Performs full end-to-end testing using test web client against a running application.
  *
  * @author dame.gjorgjievski
  * @version 1.0
@@ -40,23 +39,21 @@ public class RestApiIntegrationTest {
     private static final String ERR_NO_RESPONSE = "Failed to retrieve response";
     private static final String ERR_NO_ERROR = "Failed to parse error from response";
     private static final String ERR_NO_UNAUTHORIZED_STATUS = "Failed to parse error from response";
-
     private static final Logger LOG = LoggerFactory.getLogger(RestApiIntegrationTest.class);
-    /**
-     * REST client instance used for issuing testing requests
-     */
+
     private final WebClient client;
 
     public RestApiIntegrationTest() throws SSLException {
-
         final SslContext ctx = SslContextBuilder.forClient()
                 .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-        final HttpClient http = HttpClient.create().secure(t -> t.sslContext(ctx) );
-        client = WebClient.builder().clientConnector(new ReactorClientHttpConnector(http)).baseUrl("https://localhost:8080/api/v1").build();
+        final HttpClient http = HttpClient.create().secure(t -> t.sslContext(ctx));
+        client = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(http))
+                .baseUrl("https://localhost:8080/api/v1").build();
     }
 
     /**
-     * Performs full integration test on REST API application
+     * Performs full end-to-end integration test on all REST API service endpoints.
      */
     @Test
     public void testRestApi() {
@@ -129,7 +126,7 @@ public class RestApiIntegrationTest {
         Assert.notNull(response, ERR_NO_RESPONSE);
         error = response.bodyToMono(ErrorResponse.class).block();
         Assert.notNull(error, ERR_NO_ERROR);
-        Assert.isTrue("org.springframework.security.access.AccessDeniedException".equals(error.getError()), "Expecting access denied error");
+        Assert.isTrue(Error.AUTH_INVALID_ACCESS.equals(error.getError()), "Expecting access denied error");
 
         // view user auth information
         response = client.get().uri("/auth/info")
@@ -140,8 +137,4 @@ public class RestApiIntegrationTest {
         Assert.notNull(user.getId(), "User identifier is null");
     }
 
-    @Before
-    public void init() throws NoSuchAlgorithmException {
-
-    }
 }
