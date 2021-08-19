@@ -8,15 +8,11 @@ app:
     - /api/docs
     - /api/swagger-ui
     - /api/swagger-ui/**
-    - /api/monitoring
-    - /monitoring
     - /api/webjars/swagger-ui
     - /api/webjars/swagger-ui/**
-    - /docs/swagger-config
-    - /actuator
-    - /actuator/**
     - /api/actuator
     - /api/actuator/**
+    - /docs/swagger-config
     - /favicon.ico
 
 springdoc:
@@ -73,8 +69,3 @@ server:
     trust-store-password: secret
     trust-store-provider: SUN
     trust-store-type: PKCS12
-
-javamelody:
-  enabled: true
-  spring-monitoring-enabled: true
-  management-endpoint-monitoring-enabled: true
