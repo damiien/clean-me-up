@@ -8,16 +8,16 @@ on:
 
 jobs:
   build_api:
-    name: Compile and test the REST API
+    name: Compile and test REST-API
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Build rest-api artifact
         env:
-          SUPER_SECRET: ${{ secrets.SSH_PRIVATE }}
+          SUPER_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE }}" | tr -d '\r' > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 700 ~/.ssh/id_rsa
           eval $(ssh-agent -s)
           ssh-add ~/.ssh/id_rsa
@@ -25,7 +25,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -N -L 5432:localhost:5432 dame@arktype.net &
           mvn spring-boot:repackage
 
-      - name: Upload rest-api artifact
+      - name: Upload REST-API artifact
         uses: actions/upload-artifact@v2
         with:
           name: rest-api-jar
@@ -34,7 +34,7 @@ jobs:
 
   build_docker:
     needs: [build_api]
-    name: Build the rest-api docker image
+    name: Build the rest-api image
     services:
       docker:
         image: docker:dind
@@ -60,7 +60,7 @@ jobs:
 
   deploy_api:
     needs: [build_docker]
-    name: Deploy rest-api docker image
+    name: Deploy rest-api image
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
     steps:
