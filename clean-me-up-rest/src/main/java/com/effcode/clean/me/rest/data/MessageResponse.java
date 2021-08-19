@@ -30,32 +30,27 @@ public class MessageResponse extends MailModel<MessageResponse, String> implemen
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ObjectMapper.DATE_FORMAT_PATTERN)
     private Date timestamp;
 
-    @JsonPropertyDescription("Mail message origin")
-    private String origin;
-
     @Override
     public MessageResponse from(final MailMessage target) {
+        this.id = target.getId().toString();
+        this.timestamp = target.getTimestamp();
         this.address = target.getAddress();
         this.subject = target.getSubject();
         this.content = target.getContent();
-        this.id = target.getId().toString();
-        this.timestamp = target.getTimestamp();
         this.origin = target.getOrigin();
         return this;
     }
 
+    @JsonPropertyDescription("Mail message unique identifier")
     @JsonGetter
     @Override
     public String getId() {
         return id;
     }
 
+    @JsonPropertyDescription("Mail message send datetime")
     public Date getTimestamp() {
         return timestamp;
-    }
-
-    public String getOrigin() {
-        return origin;
     }
 
     @JsonPropertyDescription("Mail message destination address")
@@ -74,5 +69,11 @@ public class MessageResponse extends MailModel<MessageResponse, String> implemen
     @Override
     public String getContent() {
         return super.getContent();
+    }
+
+    @JsonPropertyDescription("Mail message origin address")
+    @Override
+    public String getOrigin() {
+        return super.getOrigin();
     }
 }

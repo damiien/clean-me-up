@@ -32,8 +32,7 @@ import java.util.List;
  * @see Test
  */
 @AutoConfigureWebTestClient
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = "spring.main.web-application-type=reactive")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class RestApiIntegrationTest {
 
     private static final String ERR_NO_RESPONSE = "Failed to retrieve response";
@@ -58,39 +57,60 @@ public class RestApiIntegrationTest {
     @Test
     public void testRestApi() {
 
+        final String USER = "user1@api.com";
+
         ClientResponse response;
         ErrorResponse error;
         TokenResponse token;
         TokenRequest credentials;
 
         // test an endpoint without authentication information to assert unauthorized error response
+        LOG.debug("/mail/messages - verify unauthorized response");
         response = client.get().uri("/mail/messages").exchange().block();
         Assert.notNull(response, ERR_NO_RESPONSE);
         error = response.bodyToMono(ErrorResponse.class).block();
         Assert.notNull(error, ERR_NO_ERROR);
         Assert.isTrue(HttpStatus.UNAUTHORIZED.value() == error.getStatus(), ERR_NO_UNAUTHORIZED_STATUS);
+        LOG.debug("/mail/messages - unauthorized response correct");
 
         // perform bad authentication scenario, use invalid credentials to retrieve error
-        credentials = new TokenRequest("user1@api.com", "wrongPassword");
+        LOG.debug("/auth/token - verify unauthorized response with invalid credentials");
+        credentials = new TokenRequest(USER, "wrongPassword");
         response = client.post().uri("/auth/token").bodyValue(credentials).exchange().block();
         Assert.notNull(response, ERR_NO_RESPONSE);
         error = response.bodyToMono(ErrorResponse.class).block();
         Assert.notNull(error, ERR_NO_ERROR);
         Assert.isTrue(Error.AUTH_PASSWORD_INVALID.equals(error.getError()));
         Assert.isTrue(HttpStatus.UNAUTHORIZED.value() == error.getStatus(), ERR_NO_UNAUTHORIZED_STATUS);
+        LOG.debug("/auth/token - unauthorized response with invalid credentials correct");
 
         // perform authentication scenario, retrieve auth token for later use
+        LOG.debug("/auth/token - verify authentication response with valid credentials");
         credentials = new TokenRequest("user1@api.com", "user");
         response = client.post().uri("/auth/token").bodyValue(credentials).exchange().block();
         Assert.notNull(response, ERR_NO_RESPONSE);
         token = response.bodyToMono(TokenResponse.class).block();
         Assert.notNull(token, "Token retrieve failed");
         Assert.notNull(token.getToken(), "Token retrieve failed");
+        LOG.debug("/auth/token - authentication response with valid credentials correct");
 
         MessageRequest request;
         MessageResponse message;
 
+        // perform message send request with validation error
+        LOG.debug("/mail/send - verify message send validation");
+        request = new MessageRequest("use-api.com", "Test Message 1", "Test Message 1 Text");
+        response = client.post().uri("/mail/send")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getToken())
+                .bodyValue(request).exchange().block();
+        Assert.notNull(response, ERR_NO_RESPONSE);
+        error = response.bodyToMono(ErrorResponse.class).block();
+        Assert.notNull(error, ERR_NO_ERROR);
+        Assert.isTrue(Error.MAIL_REQUEST_INVALID.equals(error.getError()), "Expecting mail validation error");
+        LOG.debug("/mail/send - message send validation correct");
+
         // perform message send request
+        LOG.debug("/mail/send - verify message send");
         request = new MessageRequest("user2@api.com", "Test Message 1", "Test Message 1 Text");
         response = client.post().uri("/mail/send")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getToken())
@@ -100,8 +120,11 @@ public class RestApiIntegrationTest {
         Assert.notNull(message, "Message send failed");
         Assert.notNull(message.getId(), "Message id is missing");
         Assert.isTrue("Test Message 1".equals(message.getSubject()), "Message subject is wrong");
+        Assert.isTrue(USER.equals(message.getOrigin()), "Message origin is wrong");
+        LOG.debug("/mail/send - message send correct");
 
         // perform message send request
+        LOG.debug("/mail/send - verify message send");
         request = new MessageRequest("admin@api.com", "Test Message 2", "Test Message 2 Text");
         response = client.post().uri("/mail/send")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getToken())
@@ -111,30 +134,38 @@ public class RestApiIntegrationTest {
         Assert.notNull(message, "Message send failed");
         Assert.notNull(message.getId(), "Message id is missing");
         Assert.isTrue("Test Message 2".equals(message.getSubject()), "Message subject is wrong");
+        LOG.debug("/mail/send - message send correct");
 
         // view list of messages and verify length
+        LOG.debug("/mail/messages - verify message collection");
         response = client.get().uri("/mail/messages")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getToken()).exchange().block();
         Assert.notNull(response, ERR_NO_RESPONSE);
         final List messages = response.bodyToMono(List.class).block();
         Assert.notNull(messages, "Failed to view message list");
         Assert.notEmpty(messages, "Message list is empty, should be full");
+        LOG.debug("/mail/messages - message collection correct");
 
         // test security with forbidden endpoint
+        LOG.debug("/auth/users - verify invalid authorization");
         response = client.get().uri("/auth/users")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getToken()).exchange().block();
         Assert.notNull(response, ERR_NO_RESPONSE);
         error = response.bodyToMono(ErrorResponse.class).block();
         Assert.notNull(error, ERR_NO_ERROR);
         Assert.isTrue(Error.AUTH_INVALID_ACCESS.equals(error.getError()), "Expecting access denied error");
+        LOG.debug("/auth/users - invalid authorization correct");
 
         // view user auth information
+        LOG.debug("/auth/info - verify auth info");
         response = client.get().uri("/auth/info")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getToken()).exchange().block();
         Assert.notNull(response, ERR_NO_RESPONSE);
         final UserResponse user = response.bodyToMono(UserResponse.class).block();
         Assert.notNull(user, "User info is null");
         Assert.notNull(user.getId(), "User identifier is null");
+        Assert.isTrue(USER.equals(user.getEmail()), "User email is wrong");
+        LOG.debug("/auth/info - auth info correct");
     }
 
 }
