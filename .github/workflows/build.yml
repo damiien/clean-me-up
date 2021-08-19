@@ -17,9 +17,9 @@ jobs:
         with:
           java-version: 11.0.4
       - uses: actions/checkout@v2
-      - name: Build rest-api artifact
+      - name: Build REST-API artifact
         run: mvn -B clean package -DskipTests
-      - name: Verify rest-api artifact
+      - name: Verify REST-API artifact
         run: mvn -B clean verify
       - name: Upload REST-API artifact
         uses: actions/upload-artifact@v2
@@ -30,38 +30,38 @@ jobs:
 
   build_docker:
     needs: [build_api]
-    name: Build the rest-api image
+    name: Build REST-API image
     services:
       docker:
         image: docker:dind
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container: docker:dind
     steps:
       - uses: actions/checkout@v2
-      - name: Download rest-api artifact
+      - name: Download REST-API artifact
         uses: actions/download-artifact@v2
         with:
           name: rest-api-jar
           path: rest-api-jar
 
-      - name: Build rest-api docker image
+      - name: Build REST-API docker image
         env:
           DOCKER_USER: ${{ github.actor }}
           DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_REGISTRY: docker.pkg.github.com
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
-          docker build -f Dockerfile -t docker.pkg.github.com/arktype/clean-me-up-rest-api .
-          docker push docker.pkg.github.com/arktype/clean-me-up-rest-api
+          docker build -f Dockerfile -t docker.pkg.github.com/arktype/clean-me-up-rest-api/clean-me-up-rest-api .
+          docker push docker.pkg.github.com/arktype/clean-me-up-rest-api/clean-me-up-rest-api
 
   deploy_api:
     needs: [build_docker]
-    name: Deploy rest-api image
+    name: Deploy REST-API image
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
-      - name: Deploy rest-api docker image
+      - name: Deploy REST-API docker image
         env:
           SUPER_SECRET: ${{ secrets.SSH_PRIVATE }}
           DOCKER_USER: ${{ github.actor }}
