@@ -39,9 +39,10 @@ public class AuthConverter implements ServerAuthenticationConverter {
         final List<String> headers = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         final String header = headers != null && !headers.isEmpty() ? headers.get(0) : null;
         if (isAllowed(exchange.getRequest().getURI().getPath())) return Mono.empty();
-        // extract and apply token 
+        // extract token and apply token based authentication
         final String token = Optional.ofNullable(header)
                 .map(h -> !h.trim().isEmpty() ? h.replace(BEARER, "").trim() : null)
+                .map(h -> !h.trim().isEmpty() ? h : null)
                 .orElseThrow(Error.AUTH_TOKEN_HEADER_NOT_FOUND::buildException);
         return manager.authenticate(token);
     }

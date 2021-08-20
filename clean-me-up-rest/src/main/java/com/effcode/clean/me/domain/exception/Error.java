@@ -17,51 +17,43 @@ public enum Error implements IError<Error> {
     /**
      * Invalid username credential detected during authentication
      */
-    AUTH_USERNAME_INVALID(410, "Invalid username credential", CredentialsException.class),
+    AUTH_CREDENTIAL_USERNAME_INVALID(410, "Invalid username credential", CredentialsException.class),
     /**
      * Invalid password credential detected during authentication
      */
-    AUTH_PASSWORD_INVALID(411, "Invalid password credential", CredentialsException.class),
+    AUTH_CREDENTIAL_PASSWORD_INVALID(411, "Invalid password credential", CredentialsException.class),
     /**
      * Invalid authentication credentials format due to bean validation
      */
-    AUTH_CREDENTIALS_INVALID(412, "Invalid authentication credentials format", CredentialsException.class),
+    AUTH_CREDENTIALS_INVALID(412, "Invalid authentication credentials format", ValidationException.class),
     /**
      * Invalid authentication token was found that could not be parsed
      */
     AUTH_TOKEN_INVALID(413, "Invalid authentication token", TokenException.class),
     /**
-     * Invalid authentication token request was found due to request data validation errors
-     */
-    AUTH_TOKEN_REQUEST_INVALID(414, "Invalid authentication token request", ValidationException.class),
-    /**
      * Invalid authentication token signature found, points to security issue as request forging
      */
-    AUTH_TOKEN_SIGNATURE_INVALID(415, "Invalid authentication token signature", TokenException.class),
+    AUTH_TOKEN_SIGNATURE_INVALID(414, "Invalid authentication token signature", TokenException.class),
     /**
      * Expired authentication token was found
      */
-    AUTH_TOKEN_EXPIRED(416, "Expired authentication token", TokenException.class),
+    AUTH_TOKEN_EXPIRED(415, "Expired authentication token", TokenException.class),
     /**
      * Malformed authentication token content detected
      */
-    AUTH_TOKEN_MALFORMED(417, "Malformed authentication token", TokenException.class),
+    AUTH_TOKEN_MALFORMED(416, "Malformed authentication token", TokenException.class),
     /**
      * Unsupported authentication token was found
      */
-    AUTH_TOKEN_UNSUPPORTED(418, "Unsupported authentication token", TokenException.class),
-    /**
-     * Illegal arguments in authentication token
-     */
-    AUTH_TOKEN_ILLEGAL(419, "Illegal authentication token", TokenException.class),
+    AUTH_TOKEN_UNSUPPORTED(417, "Unsupported authentication token", TokenException.class),
     /**
      * Authentication token header was not found
      */
-    AUTH_TOKEN_HEADER_NOT_FOUND(420, "Authentication token header not found", TokenException.class),
+    AUTH_TOKEN_HEADER_NOT_FOUND(418, "Authentication token header not found", TokenException.class),
     /**
      * Resource path access is denied
      */
-    AUTH_INVALID_ACCESS(421, "Not authorized to view resource, access denied", InvalidAccessException.class),
+    AUTH_INVALID_ACCESS(419, "Not authorized to view resource, access denied", InvalidAccessException.class),
     /**
      * Mail send request validation failure error
      */

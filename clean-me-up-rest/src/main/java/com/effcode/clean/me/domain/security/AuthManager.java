@@ -76,13 +76,13 @@ public class AuthManager implements ReactiveAuthenticationManager {
             // resolve user by username
             final UserPrincipal user = findByUsername(username);
             if (user == null) {
-                sink.error(Error.AUTH_USERNAME_INVALID.buildException());
+                sink.error(Error.AUTH_CREDENTIAL_USERNAME_INVALID.buildException());
                 return;
             }
 
             // match passwords or throw exception
             if (!user.getPassword().equals(password)) {
-                sink.error(Error.AUTH_PASSWORD_INVALID.buildException());
+                sink.error(Error.AUTH_CREDENTIAL_PASSWORD_INVALID.buildException());
                 return;
             }
 
@@ -110,6 +110,10 @@ public class AuthManager implements ReactiveAuthenticationManager {
     public Mono<Authentication> authenticate(final String token) throws AuthenticationException {
 
         return Mono.create(sink -> {
+
+            // validate token for expiration or interception
+            validateToken(token);
+
             // resolve / lookup user principal by token
             final UserPrincipal user = registry.stream().filter(u -> u.getToken() != null && u.getToken().equals(token))
                     .findFirst().orElse(null);
@@ -117,8 +121,7 @@ public class AuthManager implements ReactiveAuthenticationManager {
                 sink.error(Error.AUTH_TOKEN_EXPIRED.buildException());
                 return;
             }
-            // validate token for expiration or interception
-            validateToken(token);
+
             // persist in security context
             final Authentication authentication = new UsernamePasswordAuthenticationToken(user, token, user.getAuthorities());
             ReactiveSecurityContextHolder.getContext()
@@ -192,12 +195,14 @@ public class AuthManager implements ReactiveAuthenticationManager {
             if (result.getSignature() == null) throw Error.AUTH_TOKEN_SIGNATURE_INVALID.buildException();
         } catch (final MalformedJwtException e) {
             throw Error.AUTH_TOKEN_MALFORMED.buildException();
+        } catch (final SignatureException e) {
+            throw Error.AUTH_TOKEN_SIGNATURE_INVALID.buildException();
         } catch (final ExpiredJwtException e) {
             throw Error.AUTH_TOKEN_EXPIRED.buildException();
         } catch (final UnsupportedJwtException e) {
             throw Error.AUTH_TOKEN_UNSUPPORTED.buildException();
         } catch (final IllegalArgumentException e) {
-            throw Error.AUTH_TOKEN_ILLEGAL.buildException();
+            throw Error.AUTH_TOKEN_INVALID.buildException();
         }
     }
 }

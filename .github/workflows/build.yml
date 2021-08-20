@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_api_artifact:
-    name: Compile and verify REST-API
+    name: Compile and verify REST-API artifact
     runs-on: ubuntu-latest
     steps:
 

@@ -80,7 +80,7 @@ public class RestApiIntegrationTest {
         Assert.notNull(response, ERR_NO_RESPONSE);
         error = response.bodyToMono(ErrorResponse.class).block();
         Assert.notNull(error, ERR_NO_ERROR);
-        Assert.isTrue(Error.AUTH_PASSWORD_INVALID.equals(error.getError()));
+        Assert.isTrue(Error.AUTH_CREDENTIAL_PASSWORD_INVALID.equals(error.getError()));
         Assert.isTrue(HttpStatus.UNAUTHORIZED.value() == error.getStatus(), ERR_NO_UNAUTHORIZED_STATUS);
         LOG.debug("/auth/token - unauthorized response with invalid credentials correct");
 

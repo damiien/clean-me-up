@@ -64,7 +64,7 @@ public class AuthApiController {
     @PostMapping(path = "/token")
     @PreAuthorize("isAnonymous()")
     public Mono<TokenResponse> authenticate(final @RequestBody TokenRequest request) {
-        new ModelValidator<TokenRequest>().validate(request, Error.AUTH_TOKEN_REQUEST_INVALID);
+        new ModelValidator<TokenRequest>().validate(request, Error.AUTH_CREDENTIALS_INVALID);
         return service.authenticate(request.getUsername(), request.getPassword()).map(TokenResponse::new);
     }
 
