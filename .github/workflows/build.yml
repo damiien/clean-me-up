@@ -7,7 +7,7 @@ on:
       - '*.md'
 
 jobs:
-  build_api:
+  build_api_artifact:
     name: Compile and test REST-API
     runs-on: ubuntu-latest
     steps:
@@ -28,8 +28,8 @@ jobs:
           path: clean-me-up-rest/target/clean-me-up-rest-1.0.0-SNAPSHOT.jar
           retention-days: 5
 
-  build_docker:
-    needs: [build_api]
+  build_api_image:
+    needs: [build_api_artifact]
     name: Build REST-API image
     services:
       docker:
@@ -51,11 +51,11 @@ jobs:
           DOCKER_REGISTRY: docker.pkg.github.com
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
-          docker build -f Dockerfile -t docker.pkg.github.com/arktype/clean-me-up-rest-api/clean-me-up-rest-api .
-          docker push docker.pkg.github.com/arktype/clean-me-up-rest-api/clean-me-up-rest-api
+          docker build -f Dockerfile -t docker.pkg.github.com/damiien/clean-me-up-rest-api/clean-me-up-rest-api .
+          docker push docker.pkg.github.com/damiien/clean-me-up-rest-api/clean-me-up-rest-api
 
-  deploy_api:
-    needs: [build_docker]
+  deploy_api_image:
+    needs: [build_api_image]
     name: Deploy REST-API image
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy REST-API docker image
         env:
-          SUPER_SECRET: ${{ secrets.SSH_PRIVATE }}
+          SUPER_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
           DOCKER_USER: ${{ github.actor }}
           DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_REGISTRY: docker.pkg.github.com
