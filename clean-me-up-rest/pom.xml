@@ -112,12 +112,12 @@
                             <goal>stop</goal>
                         </goals>
                     </execution>
-<!--                    <execution>-->
-<!--                        <id>run-rest-api</id>-->
-<!--                        <goals>-->
-<!--                            <goal>run</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -127,7 +127,26 @@
                 <version>2.22.2</version>
                 <configuration>
                     <skipTests>${tests.skip}</skipTests>
+                    <excludes>
+                        <exclude>**/*IntegrationTest</exclude>
+                    </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*IntegrationTest</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

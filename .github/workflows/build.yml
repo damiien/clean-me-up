@@ -32,18 +32,18 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Perform Sonar analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=damiien_clean-me-up
-
       - uses: actions/checkout@v2
       - name: Build REST-API artifact
         run: mvn -B clean package -DskipTests
 
-      #      - name: Verify REST-API artifact
-      #        run: mvn -B clean verify
+      - name: Verify REST-API artifact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=damiien_clean-me-up
+
+      - name: Test REST-API artifact
+        run: mvn -B clean verify -Psurefire
 
       - name: Upload REST-API artifact
         uses: actions/upload-artifact@v2
