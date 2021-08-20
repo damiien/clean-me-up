@@ -75,7 +75,7 @@ public class MailService {
 
             final MailMessage message = new MailMessage(email);
             messages.add(message);
-            LOG.info("Sent email success. Record: " + message.asString());
+            LOG.info("Sent email success. Record: {}", message.asString());
             sink.success(message);
         });
     }

@@ -1,7 +1,6 @@
 package com.effcode.clean.me.rest.error;
 
 import com.effcode.clean.me.domain.exception.Error;
-import com.effcode.clean.me.domain.exception.InvalidAccessException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;

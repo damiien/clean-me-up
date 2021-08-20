@@ -14,6 +14,12 @@ import java.util.TimeZone;
 public final class DateUtil {
 
     /**
+     * Sealed constructor
+     */
+    private DateUtil() {
+    }
+
+    /**
      * Provides the current date and time with UTC offset
      *
      * @return current UTC date and time

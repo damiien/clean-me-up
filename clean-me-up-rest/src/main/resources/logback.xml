@@ -48,4 +48,9 @@
         <appender-ref ref="AsyncConsole"/>
     </logger>
 
+    <logger name="reactor.netty" level="info" additivity="false">
+        <appender-ref ref="AsyncFile"/>
+        <appender-ref ref="AsyncConsole"/>
+    </logger>
+
 </configuration>

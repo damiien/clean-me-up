@@ -36,7 +36,14 @@ public enum ApiEndpoint implements IEnum<ApiEndpoint> {
      * REST API endpoint path constant values
      */
     public static final class Value {
+
         public static final String MAIL = ApplicationConfig.PATH + "/" + ApiVersion.Value.V1 + "/mail";
         public static final String AUTH = ApplicationConfig.PATH + "/" + ApiVersion.Value.V1 + "/auth";
+
+        /**
+         * Sealed constructor
+         */
+        private Value() {
+        }
     }
 }

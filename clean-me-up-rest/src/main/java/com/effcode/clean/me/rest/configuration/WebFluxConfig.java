@@ -24,8 +24,6 @@ import org.springframework.security.web.server.context.WebSessionServerSecurityC
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
-import java.util.stream.Collectors;
-
 /**
  * Web Flux configuration used for setup of reactive processing environment, primarily the security aspects. Enables the
  * web flux and web flux security auto-configuration.

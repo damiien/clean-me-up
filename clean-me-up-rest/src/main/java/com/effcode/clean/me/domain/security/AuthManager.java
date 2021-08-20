@@ -71,7 +71,7 @@ public class AuthManager implements ReactiveAuthenticationManager {
             final UsernamePasswordAuthenticationToken credentials = (UsernamePasswordAuthenticationToken) authentication;
             final String username = (String) credentials.getPrincipal();
             final String password = (String) credentials.getCredentials();
-            LOG.debug("Attempting login with " + username + " : " + password);
+            LOG.debug("Attempting login with {} : {}", username, password);
 
             // resolve user by username
             final UserPrincipal user = findByUsername(username);
@@ -91,7 +91,7 @@ public class AuthManager implements ReactiveAuthenticationManager {
             final Authentication result = new UsernamePasswordAuthenticationToken(user, token, user.getAuthorities());
             user.setToken(token);
             user.setTimestamp(new Date());
-            LOG.debug("Generated authentication token for user " + user.getUsername() + " : " + token);
+            LOG.debug("Generated authentication token for user {} : {}", user.getUsername(), token);
 
             // persist in security context
             ReactiveSecurityContextHolder.getContext()

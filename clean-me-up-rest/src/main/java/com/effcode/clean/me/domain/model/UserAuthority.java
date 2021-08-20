@@ -44,8 +44,15 @@ public enum UserAuthority implements IEnum<UserAuthority>, GrantedAuthority {
      * User security authority constant values
      */
     public static final class Value {
+
         public static final String USER = "USER";
         public static final String ADMIN = "ADMIN";
         public static final String ANONYMOUS = "ANONYMOUS";
+
+        /**
+         * Sealed constructor
+         */
+        private Value() {
+        }
     }
 }

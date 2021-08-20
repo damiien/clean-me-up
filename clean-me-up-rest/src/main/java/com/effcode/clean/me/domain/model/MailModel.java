@@ -33,17 +33,17 @@ public abstract class MailModel<M extends MailModel<M, ID>, ID> implements IMode
     @Email
     protected String origin;
 
-    public MailModel() {
+    protected MailModel() {
     }
 
-    public MailModel(final String address, final String subject, final String content, final String origin) {
+    protected MailModel(final String address, final String subject, final String content, final String origin) {
         this.address = address;
         this.subject = subject;
         this.content = content;
         this.origin = origin;
     }
 
-    public MailModel(final MailModel<?, ?> model) {
+    protected MailModel(final MailModel<?, ?> model) {
         this.address = model.getAddress();
         this.subject = model.getSubject();
         this.content = model.getContent();

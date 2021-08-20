@@ -41,8 +41,16 @@ public enum ApiVersion implements IEnum<ApiVersion> {
      * REST API version constant values
      */
     public static final class Value {
+
         public static final String V1 = "v1";
         public static final String V2 = "v2";
         public static final String V3 = "v2";
+
+        /**
+         * Sealed constructor
+         */
+        private Value() {
+        }
+
     }
 }

@@ -31,6 +31,7 @@ public enum ApiStatus implements IEnum<ApiStatus> {
      * Response status code values
      */
     public static final class Value {
+
         public static final int CODE_OK = 200;
         public static final String OK = CODE_OK + "";
         public static final int CODE_CREATED = 201;
@@ -41,6 +42,12 @@ public enum ApiStatus implements IEnum<ApiStatus> {
         public static final String UNAUTHORIZED = CODE_UNAUTHORIZED + "";
         public static final int CODE_FORBIDDEN = 403;
         public static final String FORBIDDEN = CODE_FORBIDDEN + "";
+
+        /**
+         * Sealed constructor
+         */
+        private Value() {
+        }
 
     }
 }
