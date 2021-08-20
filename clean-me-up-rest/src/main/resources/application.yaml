@@ -25,6 +25,7 @@ spring:
   main:
     web-application-type: reactive
     allow-bean-definition-overriding: true
+    banner-mode: off
 
 management:
   endpoints:
