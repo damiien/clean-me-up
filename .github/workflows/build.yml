@@ -73,10 +73,11 @@ jobs:
           DOCKER_USER: ${{ github.actor }}
           DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_REGISTRY: docker.pkg.github.com
+          REPOSITORY: clean-me-up
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $DOCKER_REGISTRY
-          docker build -f Dockerfile -t docker.pkg.github.com/damiien/clean-me-up-rest-api/clean-me-up-rest-api .
-          docker push docker.pkg.github.com/damiien/clean-me-up-rest-api/clean-me-up-rest-api
+          docker build -f Dockerfile -t $DOCKER_REGISTRY/$DOCKER_USER/$REPOSITORY/clean-me-up-rest-api:1.0.0 .
+          docker push $DOCKER_REGISTRY/$DOCKER_USER/$REPOSITORY/clean-me-up-rest-api:1.0.0
 
   deploy_api_image:
     needs: [build_api_image]
