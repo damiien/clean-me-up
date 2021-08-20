@@ -96,7 +96,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>repackage-artifact</id>
+                        <id>repackage-verify-artifact</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
@@ -111,13 +111,6 @@
                         <id>post-integration-test</id>
                         <goals>
                             <goal>stop</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify-artifact</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
