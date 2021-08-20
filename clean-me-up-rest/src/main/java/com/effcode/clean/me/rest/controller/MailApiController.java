@@ -66,7 +66,7 @@ public class MailApiController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/send", method = RequestMethod.POST)
+    @PostMapping(path = "/send")
     @PreAuthorize("isAuthenticated()")
     public Mono<MessageResponse> send(final @RequestBody MessageRequest request, final Authentication authentication) {
         request.setOrigin(((UserPrincipal) authentication.getPrincipal()).getUsername());
@@ -91,7 +91,7 @@ public class MailApiController {
                     description = "Mail message collection retrieve failure due to unauthorized access",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @RequestMapping(path = "/messages", method = RequestMethod.GET)
+    @GetMapping(path = "/messages")
     @PreAuthorize("isAuthenticated()")
     public Mono<List<MessageResponse>> messages(final Authentication authentication) {
         return service.findMessages((UserPrincipal) authentication.getPrincipal())

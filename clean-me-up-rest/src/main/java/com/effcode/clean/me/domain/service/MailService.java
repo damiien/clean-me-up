@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
 @Service
 public class MailService {
 
+    private static final List<String> BLACKLIST = Arrays.asList("microsoft.com", "apple.com", "intel.com");
     private static final Logger LOG = LoggerFactory.getLogger(MailService.class);
     private final List<MailMessage> messages = Collections.synchronizedList(new LinkedList<>());
-    private final List<String> BLACKLIST = Arrays.asList("microsoft.com", "apple.com", "intel.com");
 
     @Autowired
     private ApplicationProperties properties;
@@ -49,7 +49,7 @@ public class MailService {
      *
      * @param email message to send
      * @return sent mail message record
-     * @throws MailException if message sending process fails
+     * @throws MailException       if message sending process fails
      * @throws ValidationException if message send data validation fails
      */
     public Mono<MailMessage> send(final MailSend email) throws MailException, ValidationException {

@@ -45,19 +45,18 @@ public class WebFluxConfig implements WebFluxConfigurer {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
-    private ApplicationProperties properties;
-
     /**
      * Web Flux security filter chain bean initializer
      *
-     * @param http      server HTTP security
-     * @param manager   authentication manager
-     * @param converter authentication converter
+     * @param http       server HTTP security
+     * @param manager    authentication manager
+     * @param converter  authentication converter
+     * @param properties application properties
      * @return security web filter chain bean instance
      */
     @Bean
-    public SecurityWebFilterChain securityFilterChain(final ServerHttpSecurity http, final AuthManager manager, final AuthConverter converter) {
+    public SecurityWebFilterChain securityFilterChain(final ServerHttpSecurity http, final AuthManager manager,
+                                                      final AuthConverter converter, final ApplicationProperties properties) {
 
         final AuthenticationWebFilter filter = new AuthenticationWebFilter(manager);
         filter.setServerAuthenticationConverter(converter);

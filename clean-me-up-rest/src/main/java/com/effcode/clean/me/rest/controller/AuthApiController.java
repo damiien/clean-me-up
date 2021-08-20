@@ -21,10 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -64,7 +61,7 @@ public class AuthApiController {
                     description = "Authentication token retrieve failure due to request validation or invalid authentication",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @RequestMapping(path = "/token", method = RequestMethod.POST)
+    @PostMapping(path = "/token")
     @PreAuthorize("isAnonymous()")
     public Mono<TokenResponse> authenticate(final @RequestBody TokenRequest request) {
         new ModelValidator<TokenRequest>().validate(request, Error.AUTH_TOKEN_REQUEST_INVALID);
@@ -89,7 +86,7 @@ public class AuthApiController {
                     description = "Registered user collection retrieve failure due to missing authority",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    @GetMapping(path = "/users")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public Mono<List<UserResponse>> users() {
         return service.getUsers().map(r -> r.stream()
