@@ -24,7 +24,7 @@ import java.util.Optional;
 @Component
 public class AuthConverter implements ServerAuthenticationConverter {
 
-    private static final String BEARER = "Bearer ";
+    private static final String BEARER = "Bearer";
     private final AuthManager manager;
     private final ApplicationProperties properties;
 
