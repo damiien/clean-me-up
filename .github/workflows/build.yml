@@ -18,22 +18,15 @@ jobs:
         with:
           java-version: 11.0.4
 
-      - uses: actions/checkout@v2
-      - name: Build REST-API artifact
-        run: mvn -B clean package -DskipTests
-
-#      - name: Verify REST-API artifact
-#        run: mvn -B clean verify
-
       - name: Cache Sonar packages
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Cache Maven packages
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -44,6 +37,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=damiien_clean-me-up
+
+      - uses: actions/checkout@v2
+      - name: Build REST-API artifact
+        run: mvn -B clean package -DskipTests
+
+      #      - name: Verify REST-API artifact
+      #        run: mvn -B clean verify
 
       - name: Upload REST-API artifact
         uses: actions/upload-artifact@v2
