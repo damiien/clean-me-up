@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 public class MessageRequest extends MailModel<MessageRequest, Void> implements IDataModel<MessageRequest, MailSend, Void> {
 
     public MessageRequest() {
+        super();
     }
 
     public MessageRequest(final String address, final String subject, final String content) {

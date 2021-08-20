@@ -94,9 +94,9 @@ public class AuthApiController {
     }
 
     /**
-     * Handler method exposing an endpoint for displaying the currently authenticated user
+     * Handler method exposing an endpoint for displaying the currently authenticated user details
      *
-     * @return current authenticated user
+     * @return current authenticated user ubfo
      */
     @Operation(summary = "View authenticated user info", description = "Display info of authenticated user",
             tags = {TAG}, security = @SecurityRequirement(name = ApplicationConfig.SECURITY_SCHEME))
@@ -107,7 +107,7 @@ public class AuthApiController {
                     description = "Authenticated user info retrieve failure due to unauthorized access",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @RequestMapping(path = "/info", method = RequestMethod.GET)
+    @GetMapping(path = "/info")
     @PreAuthorize("isAuthenticated()")
     public Mono<UserResponse> user() {
         return service.getUser().map(u -> new UserResponse().from(u));

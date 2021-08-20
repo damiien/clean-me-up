@@ -87,7 +87,12 @@ public abstract class MailModel<M extends MailModel<M, ID>, ID> implements IMode
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    /**
+     * Sets the origin of this mail message
+     *
+     * @param origin mail message origin
+     */
+    public void setOrigin(final String origin) {
         this.origin = origin;
     }
 }
